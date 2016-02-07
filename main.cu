@@ -106,7 +106,7 @@ __global__ void voxelize_kernel(
 	if ( (xIndex < w) && (yIndex < h) && (zIndex < d) )
 	{
 		// find linearlized index in final boolean array
-		unsigned int index_out = xIndex*(w*h)+yIndex*h + zIndex;
+		unsigned int index_out = zIndex*(w*h)+yIndex*h + xIndex;
 		
 		// find world space position of the voxel
 		float3 pos = make_float3(bottom_left.x + spacing*xIndex,bottom_left.y + spacing*yIndex,bottom_left.z + spacing*zIndex);
