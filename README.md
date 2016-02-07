@@ -100,25 +100,29 @@ CPU algorithm: 84.0355 seconds
 
 ### Pictures
 
-Example mesh
-![Bunny](./images/bunny.png)
-64x64x64
+Example mesh bunny
+![Bunny mesh](./images/bunny.png)
+voxelized to 64x64x64
 ![Bunny](./images/bunny_64.png)
-32x32x32
+voxelized to 32x32x32
 ![Bunny](./images/bunny_32.png)
-64x64x64
 
+Example mesh sphere
+![Sphere mesh](./images/bunny.png)
+voxelized to 64x64x64
 ![Sphere](./images/sphere_64.png)
-32x32x32
+voxelized to 32x32x32
 ![Sphere](./images/sphere_32.png)
-64x64x64
 
+Example mesh teapot
+![Teapot mesh](./images/teapot.png)
+voxelized to 64x64x64
 ![Teapot](./images/teapot_64.png)
-32x32x32
+voxelized to 32x32x32
 ![Teapot](./images/teapot_32.png)
 
 Example mesh with gaps
-![Bunny](./images/bunny.png)
+![Bunny](./images/broken_bunny.png)
 
 Broken mesh with fixed direction
 ![Broken Bunny](./images/broken_bunny_64.png)
