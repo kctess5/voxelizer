@@ -79,7 +79,7 @@ I liked this assignment!
 
 ### Benchmarks
 
-I tested this out with the same parameters as the given executable for all of the given shapes. These are the results:
+I tested this out with the same parameters as the given executable for all of the given shapes. These are the results on my GTX970:
 
 Size 64x64x64
 
@@ -102,21 +102,23 @@ CPU algorithm: 84.0355 seconds
 
 Example mesh bunny
 ![Bunny mesh](./images/bunny.png)
-voxelized to 64x64x64
+voxelized to 128x128x128 (with 5 samples - 125 seconds)
+![Bunny](./images/bunny_128.png)
+voxelized to 64x64x64 (3.25 seconds)
 ![Bunny](./images/bunny_64.png)
 voxelized to 32x32x32
 ![Bunny](./images/bunny_32.png)
 
 Example mesh sphere
 ![Sphere mesh](./images/bunny.png)
-voxelized to 64x64x64
+voxelized to 64x64x64 (.12 seconds)
 ![Sphere](./images/sphere_64.png)
 voxelized to 32x32x32
 ![Sphere](./images/sphere_32.png)
 
 Example mesh teapot
 ![Teapot mesh](./images/teapot.png)
-voxelized to 64x64x64
+voxelized to 64x64x64 (.20 seconds)
 ![Teapot](./images/teapot_64.png)
 voxelized to 32x32x32
 ![Teapot](./images/teapot_32.png)
