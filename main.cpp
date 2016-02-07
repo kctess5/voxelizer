@@ -14,7 +14,8 @@ struct VoxelizerArgs : Args {
 	// path to files
 	std::string input, output;
 	// voxelization settings
-	int size, width, height, depth;
+	int size;
+	// width, height, depth;
 	int samples;
 };
 
@@ -29,9 +30,9 @@ VoxelizerArgs * parseArgs(int argc, char *argv[]) {
 	TCLAP::UnlabeledValueArg<std::string> output("output","path to save voxel grid", true, "", "string");
 
 	TCLAP::ValueArg<int> size(  "r","resolution", "voxelization resolution",  false, 32, "int");
-	TCLAP::ValueArg<int> width( "x","width", "voxelization width",  false, 32, "int");
-	TCLAP::ValueArg<int> height("y","height","voxelization height", false, 32, "int");
-	TCLAP::ValueArg<int> depth( "z","depth", "voxelization depth",  false, 32, "int");
+	// TCLAP::ValueArg<int> width( "x","width", "voxelization width",  false, 32, "int");
+	// TCLAP::ValueArg<int> height("y","height","voxelization height", false, 32, "int");
+	// TCLAP::ValueArg<int> depth( "z","depth", "voxelization depth",  false, 32, "int");
 
 	TCLAP::ValueArg<int> samples( "s","samples", "number of sample rays per vertex",  false, -1, "int");
 
@@ -39,25 +40,27 @@ VoxelizerArgs * parseArgs(int argc, char *argv[]) {
 
 	// Add args to command line object and parse
 	cmd.add(input); cmd.add(output);  // order matters for positional args
-	cmd.add(size); cmd.add(width); cmd.add(height); cmd.add(depth); cmd.add(verbosity); cmd.add(samples);
+	cmd.add(size); 
+	// cmd.add(width); cmd.add(height); cmd.add(depth); 
+	cmd.add(verbosity); cmd.add(samples);
 	cmd.parse( argc, argv );
 
 	// store in wrapper struct
 	args->input  = input.getValue();
 	args->output = output.getValue();
 	args->size   = size.getValue();
-	args->width  = width.getValue();
-	args->height = height.getValue();
-	args->depth  = depth.getValue();
+	// args->width  = width.getValue();
+	// args->height = height.getValue();
+	// args->depth  = depth.getValue();
 	args->samples  = samples.getValue();
 	args->verbosity  = verbosity.getValue();
 
 	args->debug(1) << "input:     " << args->input  << std::endl;
 	args->debug(1) << "output:    " << args->output << std::endl;
 	args->debug(1) << "size:      " << args->size   << std::endl;
-	args->debug(1) << "width:     " << args->width  << std::endl;
-	args->debug(1) << "height:    " << args->height << std::endl;
-	args->debug(1) << "depth:     " << args->height << std::endl;
+	// args->debug(1) << "width:     " << args->width  << std::endl;
+	// args->debug(1) << "height:    " << args->height << std::endl;
+	// args->debug(1) << "depth:     " << args->height << std::endl;
 	args->debug(1) << "samples:   " << args->samples << std::endl;
 	args->debug(1) << "verbosity: " << args->verbosity << std::endl;
 

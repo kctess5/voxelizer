@@ -23,12 +23,6 @@ Options:
 
     -v, --verbose     : Verbosity level. Multiple flags for more verbosity.    
 
-    -z, --depth       : voxelization depth    
-
-    -y, --height      : voxelization height    
-
-    -x, --width       : voxelization width    
-
     -r, --resolution  : voxelization resolution    
 
     -h, --help        : Displays usage information and exits.
