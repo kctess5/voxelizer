@@ -2,7 +2,7 @@
 
 This is a simple voxelization engine made for MIT's 6.807 Computational Fabrication. Given a .obj mesh, this will output a voxel grid in the form of another .obj file. This voxelizer relies on CUDA for acceleration of the inherently parallel voxelization process.
 
-WARNING: this can generate some BIG files and make your computer very sad. Keep the resolution below around 128 for safety. Higher can be achieved, but a more efficient storage method would probably be wise first.
+**WARNING**: this can generate some BIG files and make your computer very sad. Keep the resolution below around 128 for safety. Higher can be achieved, but a more efficient storage method would probably be wise first.
 
 Using resolution of 256 I generated a 4.7 GB voxel file containing over 67 million vertices. This just about crashed my computer as I obliterated my poor swap space. On the bright side, it only took 2.8 seconds to generate...
 
@@ -10,6 +10,8 @@ This voxelizer is built on:
 
 - [Möller–Trumbore intersection algorithm](https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm)
 - CUDA
+
+You can visualize the output file with MeshLab.
 
 ### Usage:
 
@@ -62,7 +64,7 @@ make
 
 ### References
 
-- This was very useful for implementing the GPU ray-triangle intersection [Möller–Trumbore intersection algorithm](https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm)
+- This was very useful for implementing the GPU ray-triangle intersection [https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm](https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm)
 - Last semester's graphics assignment in which I implemented ray-triangle intersection
 - The CUDA documentation
 - The given skeleton code
@@ -77,12 +79,16 @@ I implemented the voxelization algorithm on the GPU with CUDA. This gives a mass
 
 Additionally, I implemented multiple sampling for incomplete blocks. Using the -s or --samples argument allows you to specify how many random directions are tested.
 
+### Notes
+
+I liked this assignment!
+
 ### Benchmarks
 
 I tested this out with the same parameters as the given executable for all of the given shapes. These are the results:
 
 Size 64x64x64
----
+
 Sphere (280x speedup)
 Num Triangles: 960
 GPU algorithm: 0.117473 seconds
