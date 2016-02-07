@@ -103,7 +103,7 @@ CPU algorithm: 84.0355 seconds
 Example mesh bunny
 ![Bunny mesh](./images/bunny.png)
 voxelized to 128x128x128 (with 5 samples - 125 seconds)
-![Bunny](./images/bunny_128.png)
+![Bunny](./images/bunny_128_5.png)
 voxelized to 64x64x64 (3.25 seconds)
 ![Bunny](./images/bunny_64.png)
 voxelized to 32x32x32
