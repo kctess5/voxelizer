@@ -129,9 +129,7 @@ bool loadMesh(const char *filename, unsigned int dim)
 	g_voxelGrid = new CompFab::VoxelGrid(bbMin-hspacing, dim, dim, dim, spacing);
 
 	delete tempMesh;
-	
 	return true;
-   
 }
 
 
