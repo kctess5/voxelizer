@@ -9,27 +9,32 @@
 #define voxelizer_CompFab_h
 
 #define EPSILON 1e-9
+#define USE_DOUBLE false
 
 #include <cmath>
 
 namespace CompFab
 {
-    
+    #if(USE_DOUBLE)
+    typedef double precision_type;
+    #else
+    typedef float precision_type;
+    #endif
     //Data Types
     typedef struct Vec3Struct
     {
         
         Vec3Struct();
-        Vec3Struct(double x, double y, double z);
+        Vec3Struct(precision_type x, precision_type y, precision_type z);
 
         union
         {
-            double m_pos[3];
-            struct { double m_x,m_y,m_z; };
+            precision_type m_pos[3];
+            struct { precision_type m_x,m_y,m_z; };
         };
         
-        inline double & operator[](unsigned int index) { return m_pos[index]; }
-        inline const double & operator[](unsigned int index) const { return m_pos[index]; }
+        inline precision_type & operator[](unsigned int index) { return m_pos[index]; }
+        inline const precision_type & operator[](unsigned int index) const { return m_pos[index]; }
         inline void operator+=(const Vec3Struct &a)
         {
             m_x += a.m_x;
@@ -46,7 +51,7 @@ namespace CompFab
     {
         
         Vec3iStruct();
-        Vec3iStruct(double x, double y, double z);
+        Vec3iStruct(precision_type x, precision_type y, precision_type z);
         union
         {
             int m_pos[3];
@@ -63,7 +68,7 @@ namespace CompFab
     {
         
         Vec2fStruct();
-        Vec2fStruct(double x, double y);
+        Vec2fStruct(precision_type x, precision_type y);
         
         union
         {
@@ -108,15 +113,17 @@ namespace CompFab
     Vec3 operator%(const Vec3 &v1, const Vec3 &v2);
     
     //Dot Product
-    double operator*(const Vec3 &v1, const Vec3 &v2);
+    precision_type operator*(const Vec3 &v1, const Vec3 &v2);
     
     
     //Grid structure for Voxels
     typedef struct VoxelGridStruct
     {
         //Square voxels only
-        VoxelGridStruct(Vec3 lowerLeft, unsigned int dimX, unsigned int dimY, unsigned int dimZ, double spacing);
+        VoxelGridStruct(Vec3 lowerLeft, unsigned int dimX, unsigned int dimY, unsigned int dimZ, precision_type spacing);
         ~VoxelGridStruct();
+
+        void save_binvox(const char * filename);
 
         inline bool & isInside(unsigned int i, unsigned int j, unsigned int k)
         {
@@ -126,7 +133,7 @@ namespace CompFab
         
         bool *m_insideArray;
         unsigned int m_dimX, m_dimY, m_dimZ, m_size;
-        double m_spacing;
+        precision_type m_spacing;
         Vec3 m_lowerLeft;
         
     } VoxelGrid;

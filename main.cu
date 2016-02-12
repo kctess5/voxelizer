@@ -92,7 +92,7 @@ __device__ bool intersects(CompFab::Triangle &triangle, float3 dir, float3 pos) 
 // Decides whether or not each voxel is within the given mesh
 __global__ void voxelize_kernel( 
 	bool* R, CompFab::Triangle* triangles, const int numTriangles, 
-	const double spacing, const float3 bottom_left,
+	const float spacing, const float3 bottom_left,
 	const int w, const int h, const int d)
 {
 	// find the position of the voxel
@@ -131,7 +131,7 @@ __global__ void voxelize_kernel_open_mesh(
 	// triangles of the mesh being voxelized
 	bool* R, CompFab::Triangle* triangles, const int numTriangles, 
 	// information about how large the samples are and where they begin
-	const double spacing, const float3 bottom_left,
+	const float spacing, const float3 bottom_left,
 	// number of voxels
 	const int w, const int h, const int d, 
 	// sampling information for multiple intersection rays
@@ -213,9 +213,9 @@ void kernel_wrapper(int samples, int w, int h, int d, CompFab::VoxelGrid *g_voxe
 	float3 lower_left = make_float3(g_voxelGrid->m_lowerLeft.m_x, g_voxelGrid->m_lowerLeft.m_y, g_voxelGrid->m_lowerLeft.m_z);
 		
 	if (samples > 0) {
-		voxelize_kernel_open_mesh<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), g_voxelGrid->m_spacing, lower_left, w, h, d, samples, devStates);
+		voxelize_kernel_open_mesh<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), (float) g_voxelGrid->m_spacing, lower_left, w, h, d, samples, devStates);
 	} else {
-		voxelize_kernel<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), g_voxelGrid->m_spacing, lower_left, w, h, d);
+		voxelize_kernel<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), (float) g_voxelGrid->m_spacing, lower_left, w, h, d);
 	}
 
 	gpuErrchk( cudaPeekAtLastError() );

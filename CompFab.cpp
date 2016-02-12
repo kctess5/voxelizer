@@ -8,7 +8,9 @@
 #include "includes/CompFab.h"
 #include <iostream>
 #include <string>
+#include <cassert>
 #include <sstream>
+#include <fstream>
 #include <vector>
 using namespace CompFab;
 
@@ -21,7 +23,7 @@ CompFab::Vec3Struct::Vec3Struct()
     m_x = m_y = m_z = 0.0;
 }
 
-CompFab::Vec3Struct::Vec3Struct(double x, double y, double z)
+CompFab::Vec3Struct::Vec3Struct(precision_type x, precision_type y, precision_type z)
 {
     m_x = x;
     m_y = y;
@@ -30,7 +32,7 @@ CompFab::Vec3Struct::Vec3Struct(double x, double y, double z)
 
 void CompFab::Vec3Struct::normalize() {
     
-    double magnitude = sqrt(m_x*m_x+m_y*m_y+m_z*m_z);
+    precision_type magnitude = sqrt(m_x*m_x+m_y*m_y+m_z*m_z);
     
     if(magnitude > EPSILON)
     {
@@ -46,7 +48,7 @@ CompFab::Vec3iStruct::Vec3iStruct()
     m_x = m_y = m_z = 0.0;
 }
 
-CompFab::Vec3iStruct::Vec3iStruct(double x, double y, double z)
+CompFab::Vec3iStruct::Vec3iStruct(precision_type x, precision_type y, precision_type z)
 {
     m_x = x;
     m_y = y;
@@ -58,7 +60,7 @@ CompFab::Vec2fStruct::Vec2fStruct()
     m_x = m_y = 0.0;
 }
 
-CompFab::Vec2fStruct::Vec2fStruct(double x, double y)
+CompFab::Vec2fStruct::Vec2fStruct(precision_type x, precision_type y)
 {
     m_x = x;
     m_y = y;
@@ -117,14 +119,14 @@ Vec3 CompFab::operator%(const Vec3 &v1, const Vec3 &v2)
 }
 
 //Dot Product
-double CompFab::operator*(const Vec3 &v1, const Vec3 &v2)
+precision_type CompFab::operator*(const Vec3 &v1, const Vec3 &v2)
 {
     return v1.m_x*v2.m_x + v1.m_y*v2.m_y+v1.m_z*v2.m_z;
 }
 
 
 //Grid structure for Voxels
-CompFab::VoxelGridStruct::VoxelGridStruct(Vec3 lowerLeft, unsigned int dimX, unsigned int dimY, unsigned int dimZ, double spacing)
+CompFab::VoxelGridStruct::VoxelGridStruct(Vec3 lowerLeft, unsigned int dimX, unsigned int dimY, unsigned int dimZ, precision_type spacing)
 {
     m_lowerLeft = lowerLeft;
     m_dimX = dimX;
@@ -148,7 +150,55 @@ CompFab::VoxelGridStruct::~VoxelGridStruct()
     delete[] m_insideArray;
 }
 
+// void CompFab::VoxelGridStruct::save_binvox(const char * filename)
+// {
+    
+// }
 
 
 
+// void write_binvox(const char * filename) 
+void CompFab::VoxelGridStruct::save_binvox(const char * filename)
+{
+    // Open file
+    std::ofstream output(filename, std::ios::out | std::ios::binary);
+    assert(output);
+    
+    // Write ASCII header
+    output << "#binvox 1" << std::endl;
+    output << "dim " << m_dimX << " " << m_dimY << " " << m_dimZ << "" << std::endl;
+    output << "translate " << m_lowerLeft.m_x << " " << m_lowerLeft.m_y << " " << m_lowerLeft.m_z << "" << std::endl;
+    output << "scale " <<  m_spacing << std::endl;
+    output << "data" << std::endl;
+
+    // Write first voxel
+    char currentvalue = char(isInside(0,0,0));
+    output.write((char*)&currentvalue, 1);
+    char current_seen = 1;
+
+    // Write BINARY Data
+    for (size_t x = 0; x < m_dimX; x++){
+        for (size_t z = 0; z < m_dimY; z++){
+            for (size_t y = 0; y < m_dimZ; y++){
+                if (x == 0 && y == 0 && z == 0){
+                    continue;
+                }
+                char nextvalue = char(isInside(x, y, z));
+                if (nextvalue != currentvalue || current_seen == (char) 255){
+                    output.write((char*)&current_seen, 1);
+                    current_seen = 1;
+                    currentvalue = nextvalue;
+                    output.write((char*)&currentvalue, 1);
+                }
+                else {
+                    current_seen++;
+                }
+            }
+        }
+    }
+
+    // Write rest
+    output.write((char*)&current_seen, 1);
+    output.close();
+}
 

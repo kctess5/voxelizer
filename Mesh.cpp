@@ -1,4 +1,5 @@
 #include "includes/Mesh.h"
+#include "includes/CompFab.h"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -14,7 +15,8 @@
 #include <string.h>
 //#include "util.h"
 
-typedef double real_t;
+// typedef double CompFab::precision_type;
+// typedef float CompFab::precision_type;
 
 ///@brief is a point inside a box
 bool ptInBox(const CompFab::Vec3 & mn,
@@ -342,13 +344,13 @@ void Mesh::rescale()
       mn[dim]= std::min(v[ii][dim],mn[dim]);
       mx[dim] = std::max(v[ii][dim],mx[dim]);
     }
-    real_t translate = -mn[dim];
+    CompFab::precision_type translate = -mn[dim];
     for(size_t ii=0; ii<v.size(); ii++) {
       v[ii][dim]=(v[ii][dim]+translate);
     }
   }
 
-  real_t scale = 1/(mx[0]-mn[0]);
+  CompFab::precision_type scale = 1/(mx[0]-mn[0]);
   for(unsigned int dim=1; dim<3; dim++) {
     scale=std::min(1/(mx[dim]-mn[dim]),scale);
   }
