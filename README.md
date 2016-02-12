@@ -72,7 +72,7 @@ There are no known problems with the code. It gets a bit squirly if given very l
 
 ### Extra Credit
 
-I implemented the voxelization algorithm on the GPU with CUDA. This gives a massive speedup - on the order of 300 times faster than the sample executable.
+I implemented the voxelization algorithm on the GPU with CUDA. This gives a massive speedup - on the order of 400-2750 times faster than the sample executable.
 
 Additionally, I implemented multiple sampling for incomplete blocks. Using the -s or --samples argument allows you to specify how many random directions are tested. There are also two different output formats. The standard obj format, as well as the more space efficient binvox format.
 
@@ -86,7 +86,6 @@ I tested this out with the same parameters as the given executable for all of th
 
 **GPU (NVIDIA GTX970)**
 
-	sphere (960 triangles) @ 64x64x64: 0.08 seconds (365x speedup)
 	teapot (2464 triangles) @ 64x64x64: 0.083 seconds (396x speedup)
 	bunny (69664 triangles) @ 64x64x64: 0.88 seconds (2750x speedup)
 
@@ -101,10 +100,13 @@ I tested this out with the same parameters as the given executable for all of th
 	sphere (960 triangles) @ 512x512x512: 6.19 seconds
 	teapot (2464 triangles) @ 512x512x512: 15.64 seconds
 	bunny (69664 triangles) @ 512x512x512: 417.62 seconds
+	dragon (100000 triangles) @ 512x512x512, 4 samples in: 2780.39 seconds
 
 	(1 Billion voxels!)
 	sphere (960 triangles) @ 1024x1024x1024: 49.93 seconds
 	teapot (2464 triangles) @ 1024x1024x1024: 126.55 seconds
+
+
 
 **CPU (Intel i5-4590, single threaded)**
 
