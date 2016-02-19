@@ -27,6 +27,8 @@ Options:
 
     -f, --format      : output format - obj|binvox (default binvox)
 
+    -d, --double      : treat mesh as double-thick
+
     -h, --help        : Displays usage information and exits.
 
 Arguments:
@@ -75,6 +77,8 @@ There are no known problems with the code. It gets a bit squirly if given very l
 I implemented the voxelization algorithm on the GPU with CUDA. This gives a massive speedup - on the order of 400-2750 times faster than the sample executable.
 
 Additionally, I implemented multiple sampling for incomplete blocks. Using the -s or --samples argument allows you to specify how many random directions are tested. There are also two different output formats. The standard obj format, as well as the more space efficient binvox format.
+
+I added in the ability to process meshes that are (for whatever reason) double thickness. This is accomplished by using (num_intersections / 2) % 2 for occupancy determination.
 
 ### Notes
 
