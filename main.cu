@@ -41,7 +41,9 @@ __global__ void setup_kernel ( curandState * state, unsigned long seed )
 } 
 
 
-__device__ bool inside(unsigned int numIntersections) {
+__device__ bool inside(unsigned int numIntersections, bool double_thick) {
+	// if (double_thick && numIntersections % 2 == 0) return (numIntersections / 2) % 2 == 1;
+	if (double_thick) return (numIntersections / 2) % 2 == 1;
 	return numIntersections % 2 == 1;
 }
 
@@ -93,7 +95,7 @@ __device__ bool intersects(CompFab::Triangle &triangle, float3 dir, float3 pos) 
 __global__ void voxelize_kernel( 
 	bool* R, CompFab::Triangle* triangles, const int numTriangles, 
 	const float spacing, const float3 bottom_left,
-	const int w, const int h, const int d)
+	const int w, const int h, const int d, bool double_thick)
 {
 	// find the position of the voxel
 	unsigned int xIndex = blockDim.x * blockIdx.x + threadIdx.x;
@@ -120,7 +122,7 @@ __global__ void voxelize_kernel(
 				intersections += 1;
 
 		// store answer
-		R[index_out] = inside(intersections);
+		R[index_out] = inside(intersections, double_thick);
 	}
 }
 
@@ -135,7 +137,7 @@ __global__ void voxelize_kernel_open_mesh(
 	// number of voxels
 	const int w, const int h, const int d, 
 	// sampling information for multiple intersection rays
-	const int samples, curandState* globalState
+	const int samples, curandState* globalState, bool double_thick
 	)
 {
 	// find the position of the voxel
@@ -173,7 +175,7 @@ __global__ void voxelize_kernel_open_mesh(
 			for (int i = 0; i < numTriangles; ++i)
 				if (intersects(triangles[i], dir, pos)) 
 					intersections += 1;
-			if (inside(intersections)) votes += 1;
+			if (inside(intersections, double_thick)) votes += 1;
 		}
 		// choose the most popular answer from all of the randomized samples
 		R[index_out] = votes > (samples / 2.f);
@@ -181,7 +183,7 @@ __global__ void voxelize_kernel_open_mesh(
 }
 
 // voxelize the given mesh with the given resolution and dimensions
-void kernel_wrapper(int samples, int w, int h, int d, CompFab::VoxelGrid *g_voxelGrid, std::vector<CompFab::Triangle> triangles)
+void kernel_wrapper(int samples, int w, int h, int d, CompFab::VoxelGrid *g_voxelGrid, std::vector<CompFab::Triangle> triangles, bool double_thick)
 {
 	int blocksInX = (w+8-1)/8;
 	int blocksInY = (h+8-1)/8;
@@ -213,9 +215,9 @@ void kernel_wrapper(int samples, int w, int h, int d, CompFab::VoxelGrid *g_voxe
 	float3 lower_left = make_float3(g_voxelGrid->m_lowerLeft.m_x, g_voxelGrid->m_lowerLeft.m_y, g_voxelGrid->m_lowerLeft.m_z);
 		
 	if (samples > 0) {
-		voxelize_kernel_open_mesh<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), (float) g_voxelGrid->m_spacing, lower_left, w, h, d, samples, devStates);
+		voxelize_kernel_open_mesh<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), (float) g_voxelGrid->m_spacing, lower_left, w, h, d, samples, devStates, double_thick);
 	} else {
-		voxelize_kernel<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), (float) g_voxelGrid->m_spacing, lower_left, w, h, d);
+		voxelize_kernel<<<Dg, Db>>>(gpu_inside_array, gpu_triangle_array, triangles.size(), (float) g_voxelGrid->m_spacing, lower_left, w, h, d, double_thick);
 	}
 
 	gpuErrchk( cudaPeekAtLastError() );

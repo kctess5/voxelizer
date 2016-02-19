@@ -17,6 +17,7 @@ struct VoxelizerArgs : Args {
 	// path to files
 	std::string input, output;
 	FileFormat format;
+	bool double_thick;
 	// voxelization settings
 	int size;
 	// width, height, depth;
@@ -38,13 +39,14 @@ VoxelizerArgs * parseArgs(int argc, char *argv[]) {
 	TCLAP::ValueArg<int> samples( "s","samples", "number of sample rays per vertex",  false, -1, "int");
 
 	TCLAP::MultiSwitchArg verbosity( "v", "verbose", "Verbosity level. Multiple flags for more verbosity.");
+	TCLAP::SwitchArg double_thick( "d", "double", "Flag for processing double-thick meshes. Uses (num_intersections/2)%2 for occupancy checking.", false);
 
 
 	// Add args to command line object and parse
 	cmd.add(input); cmd.add(output);  // order matters for positional args
 	cmd.add(size); cmd.add(format); 
 	// cmd.add(width); cmd.add(height); cmd.add(depth); 
-	cmd.add(verbosity); cmd.add(samples);
+	cmd.add(verbosity); cmd.add(samples); cmd.add(double_thick);
 	cmd.parse( argc, argv );
 
 	// store in wrapper struct
@@ -56,6 +58,7 @@ VoxelizerArgs * parseArgs(int argc, char *argv[]) {
 	// args->depth  = depth.getValue();
 	args->samples  = samples.getValue();
 	args->verbosity  = verbosity.getValue();
+	args->double_thick  = double_thick.getValue();
 
 	args->debug(1) << "input:     " << args->input  << std::endl;
 	args->debug(1) << "output:    " << args->output << std::endl;
@@ -79,6 +82,7 @@ VoxelizerArgs * parseArgs(int argc, char *argv[]) {
 	// args->debug(1) << "depth:     " << args->height << std::endl;
 	args->debug(1) << "samples:   " << args->samples << std::endl;
 	args->debug(1) << "verbosity: " << args->verbosity << std::endl;
+	if (args->double_thick) args->debug(1) << "Processing mesh as double-thick." << std::endl;
 
 	return args;
 }
@@ -178,7 +182,7 @@ bool save(VoxelizerArgs *args) {
 	return true;
 }
 
-extern void kernel_wrapper(int samples, int w, int h, int d, CompFab::VoxelGrid *g_voxelGrid, std::vector<CompFab::Triangle> triangles);
+extern void kernel_wrapper(int samples, int w, int h, int d, CompFab::VoxelGrid *g_voxelGrid, std::vector<CompFab::Triangle> triangles, bool double_thick);
 
 int main(int argc, char *argv[])
 {
@@ -190,7 +194,7 @@ int main(int argc, char *argv[])
 	clock_t start = clock();
 	args->debug(0) << "Voxelizing in the GPU, this might take a while." << std::endl;
 	if (args->samples > -1) args->debug(0) << "Randomly choosing " << args->samples << " directions." << std::endl;
-	kernel_wrapper(args->samples, args->size, args->size, args->size, g_voxelGrid, g_triangleList);
+	kernel_wrapper(args->samples, args->size, args->size, args->size, g_voxelGrid, g_triangleList, args->double_thick);
 
 	// Summary: teapot.obj (9000 triangles) @ 512x512x512, 3 samples in: 15 seconds
 	args->debug(0) << "Summary: "
